@@ -46,7 +46,7 @@ function RideMap() {
   const [distance, setDistance] = useState(null)
 
   useEffect(() => {
-    socketRef.current = io('http://192.168.0.103:5000')
+    socketRef.current = io(import.meta.env.VITE_API_BASE || 'http://localhost:5000')
 
     socketRef.current.emit('join-ride', rideCode)
 
