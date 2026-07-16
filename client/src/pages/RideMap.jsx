@@ -39,6 +39,7 @@ function RideMap() {
   const navigate = useNavigate()
 
   const [riders, setRiders] = useState([])
+  const [totalRiders, setTotalRiders] = useState(1)
   const [myLocation, setMyLocation] = useState(null)
   const [rideInfo, setRideInfo] = useState(null)
   const [reaction, setReaction] = useState('')
@@ -60,6 +61,10 @@ function RideMap() {
         }
         return [...prev, data]
       })
+    })
+
+    socketRef.current.on('rider-count-update', (data) => {
+      setTotalRiders(data.count)
     })
 
     socketRef.current.on('receive-reaction', (data) => {
@@ -169,7 +174,7 @@ return () => navigator.geolocation.clearWatch(watchId)
           <p style={styles.code}>Code: {rideCode}</p>
         </div>
        <div style={styles.rideStats}>
-          <p style={styles.riderCount}>👥 {riders.length + 1} riders</p>
+          <p style={styles.riderCount}>👥 {totalRiders} riders</p>
         </div>
       </div>
 

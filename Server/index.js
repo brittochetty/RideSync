@@ -36,6 +36,10 @@ io.on('connection', (socket) => {
   socket.on('join-ride', (rideCode) => {
     socket.join(rideCode);
     console.log(`Rider joined ride room: ${rideCode}`);
+    
+    // Tell everyone in the room that a new rider joined
+    const roomSize = io.sockets.adapter.rooms.get(rideCode)?.size || 1;
+    io.to(rideCode).emit('rider-count-update', { count: roomSize });
   });
 
   socket.on('send-location', (data) => {
