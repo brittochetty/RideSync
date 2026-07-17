@@ -52,7 +52,7 @@ function RideMap() {
 
     socketRef.current.emit('join-ride', rideCode)
 
-    socketRef.current.on('receive-location', (data) => {
+   socketRef.current.on('receive-location', (data) => {
       setRiders((prev) => {
         const exists = prev.find((r) => r.userId === data.userId)
         if (exists) {
@@ -62,6 +62,30 @@ function RideMap() {
         }
         return [...prev, data]
       })
+
+      if (myLocation) {
+        const dist = calculateDistance(
+          myLocation.latitude,
+          myLocation.longitude,
+          data.latitude,
+          data.longitude
+        )
+        const distNum = parseFloat(dist)
+        setRiderDistances((prev) => {
+          const exists = prev.find((r) => r.userId === data.userId)
+          const newEntry = {
+            userId: data.userId,
+            name: data.name,
+            distance: distNum,
+            position: distNum < 0.1 ? 'same location' :
+              data.latitude > myLocation.latitude ? 'ahead' : 'behind'
+          }
+          if (exists) {
+            return prev.map((r) => r.userId === data.userId ? newEntry : r)
+          }
+          return [...prev, newEntry]
+        })
+      }
     })
 
     socketRef.current.on('rider-count-update', (data) => {
