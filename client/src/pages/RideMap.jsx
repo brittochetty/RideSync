@@ -40,6 +40,7 @@ function RideMap() {
 
   const [riders, setRiders] = useState([])
   const [totalRiders, setTotalRiders] = useState(1)
+  const [riderDistances, setRiderDistances] = useState([])  
   const [myLocation, setMyLocation] = useState(null)
   const [rideInfo, setRideInfo] = useState(null)
   const [reaction, setReaction] = useState('')
@@ -110,6 +111,25 @@ function RideMap() {
           latitude,
           longitude
         })
+        // Calculate distance from each rider
+        if (riders.length > 0) {
+          const distances = riders
+            .filter(r => r.latitude && r.longitude)
+            .map(r => {
+              const dist = calculateDistance(
+                latitude, longitude,
+                r.latitude, r.longitude
+              )
+              const distNum = parseFloat(dist)
+              return {
+                name: r.name,
+                distance: distNum,
+                position: distNum < 0.1 ? 'same location' :
+                  r.latitude > latitude ? 'ahead' : 'behind'
+              }
+            })
+          setRiderDistances(distances)
+        }
 
         if (rideInfo?.destination?.latitude && rideInfo?.destination?.longitude) {
           const dist = calculateDistance(
@@ -177,6 +197,27 @@ return () => navigator.geolocation.clearWatch(watchId)
           <p style={styles.riderCount}>👥 {totalRiders} riders</p>
         </div>
       </div>
+
+
+      {riderDistances.length > 0 && (
+        <div style={styles.riderPanel}>
+          {riderDistances.map((r, i) => (
+            <div key={i} style={styles.riderRow}>
+              <span style={styles.riderName}>👤 {r.name}</span>
+              <span style={{
+                ...styles.riderDist,
+                color: r.position === 'ahead' ? '#4caf50' : 
+                       r.position === 'behind' ? '#e63946' : '#aaa'
+              }}>
+                {r.position === 'same location' ? '📍 Same location' :
+                 `${r.distance} km ${r.position}`}
+                {r.position === 'behind' && r.distance > 5 && ' ⚠️'}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
 
       {rideInfo?.destination?.name && (
         <div style={styles.destBar}>
@@ -369,6 +410,27 @@ const styles = {
     textAlign: 'center',
     padding: '6px',
     fontSize: '13px',
+    fontWeight: 'bold'
+  },
+
+
+  riderPanel: {
+    backgroundColor: '#0f0f1a',
+    padding: '6px 12px',
+    borderBottom: '1px solid #2a2a4a'
+  },
+  riderRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '4px 0'
+  },
+  riderName: {
+    color: '#aaa',
+    fontSize: '12px'
+  },
+  riderDist: {
+    fontSize: '12px',
     fontWeight: 'bold'
   },
   destBar: {
