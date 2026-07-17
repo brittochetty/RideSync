@@ -41,6 +41,7 @@ function RideMap() {
   const [riders, setRiders] = useState([])
   const [totalRiders, setTotalRiders] = useState(1)
   const [riderDistances, setRiderDistances] = useState([])  
+
   const [myLocation, setMyLocation] = useState(null)
   const [rideInfo, setRideInfo] = useState(null)
   const [reaction, setReaction] = useState('')
@@ -171,6 +172,33 @@ function RideMap() {
     )
 return () => navigator.geolocation.clearWatch(watchId)
   }, [rideCode, user, rideInfo])
+
+  // ADD THE NEW useEffect RIGHT HERE 👇
+  useEffect(() => {
+    if (myLocation && riders.length > 0) {
+      const distances = riders
+        .filter(r => r.latitude && r.longitude)
+        .map(r => {
+          const dist = calculateDistance(
+            myLocation.latitude,
+            myLocation.longitude,
+            r.latitude,
+            r.longitude
+          )
+          const distNum = parseFloat(dist)
+          return {
+            userId: r.userId,
+            name: r.name,
+            distance: distNum,
+            position: distNum < 0.1 ? 'same location' :
+              r.latitude > myLocation.latitude ? 'ahead' : 'behind'
+          }
+        })
+      setRiderDistances(distances)
+    }
+  }, [riders, myLocation])
+
+  
 
   const sendReaction = (emoji) => {
     socketRef.current.emit('send-reaction', {
