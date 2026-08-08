@@ -45,6 +45,7 @@ function RideMap() {
   const [myLocation, setMyLocation] = useState(null)
   const [rideInfo, setRideInfo] = useState(null)
   const [reaction, setReaction] = useState('')
+  const [stragglerAlert, setStragglerAlert] = useState('')
   const socketRef = useRef(null)
   const [distance, setDistance] = useState(null)
 
@@ -96,6 +97,10 @@ function RideMap() {
     socketRef.current.on('receive-reaction', (data) => {
       setReaction(`${data.name}: ${data.reaction}`)
       setTimeout(() => setReaction(''), 3000)
+    })
+    socketRef.current.on('receive-straggler', (data) => {
+      setStragglerAlert(`⚠️ ${data.name} is falling behind the group!`)
+      setTimeout(() => setStragglerAlert(''), 5000)
     })
 
     return () => {
@@ -173,7 +178,7 @@ function RideMap() {
 return () => navigator.geolocation.clearWatch(watchId)
   }, [rideCode, user, rideInfo])
 
-  // ADD THE NEW useEffect RIGHT HERE 👇
+  
   useEffect(() => {
     if (myLocation && riders.length > 0) {
       const distances = riders
@@ -198,6 +203,28 @@ return () => navigator.geolocation.clearWatch(watchId)
     }
   }, [riders, myLocation])
 
+  useEffect(() => {
+    if (myLocation && riders.length > 0) {
+      riders.forEach(rider => {
+        if (rider.latitude && rider.longitude) {
+          const dist = calculateDistance(
+            myLocation.latitude,
+            myLocation.longitude,
+            rider.latitude,
+            rider.longitude
+          )
+          if (parseFloat(dist) > 5) {
+            socketRef.current.emit('send-straggler', {
+              rideCode,
+              name: rider.name,
+              distance: dist
+            })
+          }
+        }
+      })
+    }
+  }, [riders, myLocation])
+  
   
 
   const sendReaction = (emoji) => {
@@ -287,6 +314,12 @@ return () => navigator.geolocation.clearWatch(watchId)
       {reaction && (
         <div style={styles.reactionBanner}>
           {reaction}
+        </div>
+      )}
+
+      {stragglerAlert && (
+        <div style={styles.stragglerBanner}>
+          {stragglerAlert}
         </div>
       )}
 
@@ -454,6 +487,15 @@ const styles = {
     textAlign: 'center',
     padding: '6px',
     fontSize: '13px',
+    fontWeight: 'bold'
+  },
+
+  stragglerBanner: {
+    backgroundColor: '#ff9f1c',
+    color: 'white',
+    textAlign: 'center',
+    padding: '8px',
+    fontSize: '14px',
     fontWeight: 'bold'
   },
   stragglerBanner: {

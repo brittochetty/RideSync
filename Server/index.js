@@ -50,6 +50,10 @@ io.on('connection', (socket) => {
     socket.to(data.rideCode).emit('receive-reaction', data)
   })
 
+  socket.on('send-straggler', (data) => {
+    socket.to(data.rideCode).emit('receive-straggler', data)
+  })
+
   socket.on('disconnect', () => {
     console.log('A rider disconnected:', socket.id);
   });
