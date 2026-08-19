@@ -162,13 +162,12 @@ function RideMap() {
         }
 
         if (rideInfo?.destination?.latitude && rideInfo?.destination?.longitude) {
-          const dist = calculateDistance(
+          getRoadDistance(
             latitude,
             longitude,
             rideInfo.destination.latitude,
             rideInfo.destination.longitude
-          )
-          setDistance(dist)
+          ).then(dist => setDistance(dist))
         }
       },
 
@@ -213,7 +212,7 @@ return () => navigator.geolocation.clearWatch(watchId)
             rider.latitude,
             rider.longitude
           )
-          if (parseFloat(dist) > 5) {
+          if (parseFloat(dist) >5) {
             socketRef.current.emit('send-straggler', {
               rideCode,
               name: rider.name,
@@ -246,6 +245,24 @@ return () => navigator.geolocation.clearWatch(watchId)
       Math.sin(dLon / 2) * Math.sin(dLon / 2)
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
     return (R * c).toFixed(1)
+  }
+
+  const getRoadDistance = async (lat1, lon1, lat2, lon2) => {
+    try {
+      const apiKey = import.meta.env.VITE_ORS_API_KEY
+      const response = await fetch(
+        `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${lon1},${lat1}&end=${lon2},${lat2}`
+      )
+      const data = await response.json()
+      if (data.features && data.features[0]) {
+        const meters = data.features[0].properties.segments[0].distance
+        return (meters / 1000).toFixed(1)
+      }
+      return calculateDistance(lat1, lon1, lat2, lon2)
+    } catch (error) {
+      console.log('Road distance failed, using straight line:', error)
+      return calculateDistance(lat1, lon1, lat2, lon2)
+    }
   }
 
   const openGoogleMaps = () => {
