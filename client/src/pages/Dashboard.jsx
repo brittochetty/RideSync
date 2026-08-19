@@ -19,9 +19,12 @@ function Dashboard() {
     }
     setLoading(true)
     setError('')
+    
 
     try {
       let destCoords = { name: destination }
+      
+
 
       try {
         const geoRes = await fetch(
