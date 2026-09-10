@@ -63,6 +63,31 @@ router.post('/join', protect, async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
+// FAMILY WATCH ROUTE — No auth required
+router.get('/watch/:rideCode', async (req, res) => {
+  try {
+    const ride = await Ride.findOne({ 
+      rideCode: req.params.rideCode 
+    }).populate('riders.user', 'name')
+
+    if (!ride) {
+      return res.status(404).json({ message: 'Ride not found' })
+    }
+
+    res.json({
+      rideCode: ride.rideCode,
+      destination: ride.destination,
+      status: ride.status,
+      riders: ride.riders.map(r => ({
+        name: r.name,
+        location: r.location
+      }))
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message })
+  }
+})
+
 
 // GET RIDE DETAILS
 router.get('/:rideCode', protect, async (req, res) => {
@@ -80,5 +105,6 @@ router.get('/:rideCode', protect, async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
+
 
 module.exports = router;

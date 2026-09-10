@@ -4,6 +4,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import RideMap from './pages/RideMap'
+import WatchRide from './pages/WatchRide'
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth()
@@ -33,6 +34,10 @@ function App() {
                 <RideMap />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path="/watch/:rideCode"
+            element={<WatchRide />}
           />
         </Routes>
       </BrowserRouter>

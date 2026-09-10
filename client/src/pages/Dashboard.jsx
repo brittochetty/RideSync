@@ -11,6 +11,7 @@ function Dashboard() {
   const [destination, setDestination] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [createdRideCode, setCreatedRideCode] = useState('')
 
   const handleCreateRide = async () => {
     if (!destination) {
@@ -68,7 +69,8 @@ function Dashboard() {
       const res = await API.post('/rides/create', {
         destination: destCoords
       })
-      navigate(`/ride/${res.data.rideCode}`)
+      setCreatedRideCode(res.data.rideCode)
+
 
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create ride')
@@ -166,6 +168,31 @@ function Dashboard() {
           >
             {loading ? '⏳ Creating ride...' : '🚀 Create Ride'}
           </button>
+          {createdRideCode && (
+            <div style={styles.shareBox}>
+              <button
+                style={styles.startRideBtn}
+                onClick={() => navigate(`/ride/${createdRideCode}`)}
+              >
+                🏍️ Start Ride
+              </button>
+              <p style={styles.shareText}>Share with family:</p>
+              <p style={styles.shareLink}>
+                {window.location.origin}/watch/{createdRideCode}
+              </p>
+              <button
+                style={styles.shareBtn}
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `${window.location.origin}/watch/${createdRideCode}`
+                  )
+                  alert('Link copied! Share with family on WhatsApp!')
+                }}
+              >
+                📋 Copy Family Watch Link
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Divider */}
@@ -214,6 +241,16 @@ const styles = {
     minHeight: '100vh',
     backgroundColor: '#0f0f1a',
     color: '#ffffff'
+  },
+  startRideBtn: {
+    backgroundColor: '#e63946',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    padding: '10px',
+    fontSize: '14px',
+    cursor: 'pointer',
+    fontWeight: 'bold'
   },
   header: {
     backgroundColor: '#1a1a2e',
@@ -370,7 +407,38 @@ const styles = {
   dividerText: {
     color: '#555',
     fontSize: '13px'
+  },
+
+    shareBox: {
+    backgroundColor: '#0f3460',
+    borderRadius: '10px',
+    padding: '12px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px'
+  },
+  shareText: {
+    color: '#aaa',
+    fontSize: '12px',
+    margin: 0
+  },
+  shareLink: {
+    color: '#4285F4',
+    fontSize: '11px',
+    wordBreak: 'break-all',
+    margin: 0
+  },
+  shareBtn: {
+    backgroundColor: '#4285F4',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    padding: '8px',
+    fontSize: '13px',
+    cursor: 'pointer',
+    fontWeight: 'bold'
   }
+  
 }
 
 export default Dashboard
