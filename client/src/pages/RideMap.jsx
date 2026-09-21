@@ -425,6 +425,14 @@ return () => navigator.geolocation.clearWatch(watchId)
           🗺️ Navigate to {rideInfo?.destination?.name || 'Destination'} via Google Maps
         </button>
       </div>
+      <div style={styles.assistBar}>
+        <button
+          style={styles.assistBtn}
+          onClick={() => navigate('/assist')}
+        >
+          🆘 Need Help? Open RideAssist
+        </button>
+      </div>
       <div style={styles.reactions}>
         <p style={styles.reactionTitle}>Quick Reactions</p>
         <div style={styles.reactionButtons}>

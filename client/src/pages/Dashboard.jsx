@@ -20,11 +20,11 @@ function Dashboard() {
     }
     setLoading(true)
     setError('')
-    
+
 
     try {
       let destCoords = { name: destination }
-      
+
 
 
       try {
@@ -120,6 +120,12 @@ function Dashboard() {
           </div>
           <button style={styles.logoutBtn} onClick={handleLogout}>
             Logout
+          </button>
+          <button
+            style={styles.assistNavBtn}
+            onClick={() => navigate('/assist')}
+          >
+            🆘 RideAssist
           </button>
         </div>
       </div>
@@ -229,6 +235,7 @@ function Dashboard() {
           >
             {loading ? '⏳ Joining...' : '🔗 Join Ride'}
           </button>
+
         </div>
 
       </div>
@@ -259,6 +266,16 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottom: '1px solid #2a2a4a'
+  },
+  assistNavBtn: {
+    backgroundColor: '#2d1b1b',
+    border: '1px solid #e63946',
+    color: '#e63946',
+    padding: '6px 14px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '13px',
+    fontWeight: 'bold'
   },
   headerLeft: {
     display: 'flex',
@@ -409,7 +426,7 @@ const styles = {
     fontSize: '13px'
   },
 
-    shareBox: {
+  shareBox: {
     backgroundColor: '#0f3460',
     borderRadius: '10px',
     padding: '12px',
@@ -438,7 +455,7 @@ const styles = {
     cursor: 'pointer',
     fontWeight: 'bold'
   }
-  
+
 }
 
 export default Dashboard

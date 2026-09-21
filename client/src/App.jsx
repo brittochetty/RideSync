@@ -5,6 +5,10 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import RideMap from './pages/RideMap'
 import WatchRide from './pages/WatchRide'
+import Assist from './assist/Assist'
+import Mechanic from './assist/Mechanic'
+import BikeSwap from './assist/BikeSwap'
+import Marketplace from './assist/Marketplace'
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth()
@@ -39,6 +43,18 @@ function App() {
             path="/watch/:rideCode"
             element={<WatchRide />}
           />
+          <Route path="/assist" element={
+            <ProtectedRoute><Assist /></ProtectedRoute>
+          } />
+          <Route path="/assist/mechanic" element={
+            <ProtectedRoute><Mechanic /></ProtectedRoute>
+          } />
+          <Route path="/assist/swap" element={
+            <ProtectedRoute><BikeSwap /></ProtectedRoute>
+          } />
+          <Route path="/assist/marketplace" element={
+            <ProtectedRoute><Marketplace /></ProtectedRoute>
+          } />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

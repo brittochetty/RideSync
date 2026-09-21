@@ -22,6 +22,9 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/rides', rideRoutes);
 
+const assistRoutes = require('./routes/assistRoutes')
+app.use('/api/assist', assistRoutes)
+
 // Socket.IO Setup
 const io = new Server(server, {
   cors: {
