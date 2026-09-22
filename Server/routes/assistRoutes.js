@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const { protect } = require('../middleware/authMiddleware')
-const multer = require('multer')
 
 // In-memory storage for listings (we'll use MongoDB)
 const mongoose = require('mongoose')
