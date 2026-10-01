@@ -79,6 +79,7 @@ function Login() {
           >
             {loading ? '⏳ Logging in...' : 'Login →'}
           </button>
+
           <Link
             to="/forgot-password"
             style={styles.forgotLink}
@@ -202,14 +203,14 @@ const styles = {
     textDecoration: 'none',
     fontSize: '14px',
     transition: 'all 0.2s'
-  }
+  },
   forgotLink: {
     textAlign: 'center',
     color: '#4285F4',
     fontSize: '13px',
     textDecoration: 'none',
     marginTop: '4px'
-  },
+  }
 }
 
 export default Login
