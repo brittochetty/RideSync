@@ -452,6 +452,23 @@ return () => navigator.geolocation.clearWatch(watchId)
 }
 
 const styles = {
+
+  assistBar: {
+    backgroundColor: '#1a1a2e',
+    padding: '6px 12px',
+    borderTop: '1px solid #2a2a4a'
+  },
+  assistBtn: {
+    backgroundColor: '#2d1b1b',
+    color: '#e63946',
+    border: '1px solid #e63946',
+    borderRadius: '8px',
+    padding: '8px',
+    fontSize: '13px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    width: '100%'
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -629,5 +646,6 @@ const styles = {
     textAlign: 'center',
     whiteSpace: 'nowrap'
   }
+  
 }
 export default RideMap

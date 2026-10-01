@@ -172,4 +172,4 @@ const styles = {
   seller: { color: '#555', fontSize: '11px', margin: 0 }
 }
 
-export default Mechanic
+export default Mechanic 

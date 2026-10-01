@@ -9,6 +9,8 @@ import Assist from './assist/Assist'
 import Mechanic from './assist/Mechanic'
 import BikeSwap from './assist/BikeSwap'
 import Marketplace from './assist/Marketplace'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth()
