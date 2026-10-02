@@ -161,7 +161,7 @@ const styles = {
   },
   links: {
     textAlign: 'center',
-    marginTop: '24px'
+    marginTop: '24px'   
   },
   link: {
     color: '#aaa',

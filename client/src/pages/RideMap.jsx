@@ -40,7 +40,7 @@ function RideMap() {
 
   const [riders, setRiders] = useState([])
   const [totalRiders, setTotalRiders] = useState(1)
-  const [riderDistances, setRiderDistances] = useState([])  
+  const [riderDistances, setRiderDistances] = useState([])
 
   const [myLocation, setMyLocation] = useState(null)
   const [rideInfo, setRideInfo] = useState(null)
@@ -54,7 +54,7 @@ function RideMap() {
 
     socketRef.current.emit('join-ride', rideCode)
 
-   socketRef.current.on('receive-location', (data) => {
+    socketRef.current.on('receive-location', (data) => {
       setRiders((prev) => {
         const exists = prev.find((r) => r.userId === data.userId)
         if (exists) {
@@ -174,10 +174,10 @@ function RideMap() {
       (error) => console.log('Location error:', error),
       { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
     )
-return () => navigator.geolocation.clearWatch(watchId)
+    return () => navigator.geolocation.clearWatch(watchId)
   }, [rideCode, user, rideInfo])
 
-  
+
   useEffect(() => {
     if (myLocation && riders.length > 0) {
       const distances = riders
@@ -212,7 +212,7 @@ return () => navigator.geolocation.clearWatch(watchId)
             rider.latitude,
             rider.longitude
           )
-          if (parseFloat(dist) >5) {
+          if (parseFloat(dist) > 5) {
             socketRef.current.emit('send-straggler', {
               rideCode,
               name: rider.name,
@@ -223,8 +223,8 @@ return () => navigator.geolocation.clearWatch(watchId)
       })
     }
   }, [riders, myLocation])
-  
-  
+
+
 
   const sendReaction = (emoji) => {
     socketRef.current.emit('send-reaction', {
@@ -287,9 +287,21 @@ return () => navigator.geolocation.clearWatch(watchId)
         </button>
         <div>
           <h2 style={styles.title}>🏍️ Live Ride</h2>
-          <p style={styles.code}>Code: {rideCode}</p>
+          <div style={styles.codeRow}>
+            <p style={styles.code}>Code: {rideCode}</p>
+            <button
+              style={styles.shareCodeBtn}
+              onClick={() => {
+                const message = `🏍️ Join my RideSync group ride!\n\nRide Code: *${rideCode}*\n\nOpen app: https://ride-sync-ruddy.vercel.app\n\nEnter the code to join and track our live location!`
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
+                window.open(whatsappUrl, '_blank')
+              }}
+            >
+              📤 Share
+            </button>
+          </div>
         </div>
-       <div style={styles.rideStats}>
+        <div style={styles.rideStats}>
           <p style={styles.riderCount}>👥 {totalRiders} riders</p>
         </div>
       </div>
@@ -302,11 +314,11 @@ return () => navigator.geolocation.clearWatch(watchId)
               <span style={styles.riderName}>👤 {r.name}</span>
               <span style={{
                 ...styles.riderDist,
-                color: r.position === 'ahead' ? '#4caf50' : 
-                       r.position === 'behind' ? '#e63946' : '#aaa'
+                color: r.position === 'ahead' ? '#4caf50' :
+                  r.position === 'behind' ? '#e63946' : '#aaa'
               }}>
                 {r.position === 'same location' ? '📍 Same location' :
-                 `${r.distance} km ${r.position}`}
+                  `${r.distance} km ${r.position}`}
                 {r.position === 'behind' && r.distance > 5 && ' ⚠️'}
               </span>
             </div>
@@ -341,7 +353,7 @@ return () => navigator.geolocation.clearWatch(watchId)
       )}
 
       <div style={styles.mapWrapper} id="map-wrapper">
-       <MapContainer
+        <MapContainer
           center={defaultCenter}
           zoom={13}
           style={{ height: '100%', width: '100%' }}
@@ -355,10 +367,10 @@ return () => navigator.geolocation.clearWatch(watchId)
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="© OpenStreetMap"
           />
-          <MapBounds 
-  myLocation={myLocation} 
-  destination={rideInfo?.destination} 
-/>
+          <MapBounds
+            myLocation={myLocation}
+            destination={rideInfo?.destination}
+          />
 
           {myLocation && (
             <Marker position={[myLocation.latitude, myLocation.longitude]}>
@@ -392,19 +404,19 @@ return () => navigator.geolocation.clearWatch(watchId)
             </Marker>
           )}
           {myLocation && rideInfo?.destination?.latitude && (
-  <Polyline
-    positions={[
-      [myLocation.latitude, myLocation.longitude],
-      [rideInfo.destination.latitude, rideInfo.destination.longitude]
-    ]}
-    pathOptions={{
-      color: '#e63946',
-      weight: 5,
-      opacity: 0.7,
-      dashArray: '10, 10'
-    }}
-  />
-)}
+            <Polyline
+              positions={[
+                [myLocation.latitude, myLocation.longitude],
+                [rideInfo.destination.latitude, rideInfo.destination.longitude]
+              ]}
+              pathOptions={{
+                color: '#e63946',
+                weight: 5,
+                opacity: 0.7,
+                dashArray: '10, 10'
+              }}
+            />
+          )}
           {riders.map((rider) => (
             rider.latitude && rider.longitude && (
               <Marker
@@ -417,7 +429,7 @@ return () => navigator.geolocation.clearWatch(watchId)
           ))}
         </MapContainer>
       </div>
-          <div style={styles.googleMapsBtn}>
+      <div style={styles.googleMapsBtn}>
         <button
           style={styles.gmapBtn}
           onClick={openGoogleMaps}
@@ -507,6 +519,22 @@ const styles = {
     textAlign: 'center',
     fontWeight: 'bold',
     letterSpacing: '2px'
+  },
+  codeRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    justifyContent: 'center'
+  },
+  shareCodeBtn: {
+    backgroundColor: '#25D366',
+    color: 'white',
+    border: 'none',
+    borderRadius: '6px',
+    padding: '3px 8px',
+    fontSize: '11px',
+    cursor: 'pointer',
+    fontWeight: 'bold'
   },
   rideStats: {
     display: 'flex',
@@ -603,7 +631,7 @@ const styles = {
     padding: '10px 14px',
     borderTop: '1px solid #2a2a4a'
   },
- gmapBtn: {
+  gmapBtn: {
     backgroundColor: '#4285F4',
     color: 'white',
     border: 'none',
@@ -646,6 +674,6 @@ const styles = {
     textAlign: 'center',
     whiteSpace: 'nowrap'
   }
-  
+
 }
 export default RideMap
