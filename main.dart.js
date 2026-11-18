@@ -25399,7 +25399,7 @@ aMD(a,b,c){var s=$.atZ()
 A.mu(a)
 if(b!==s.a.get(a))throw A.e(A.kw("Platform interfaces must not be implemented with `implements`"))},
 abd:function abd(){},
-auj(){return"http://localhost:5000/api"},
+auj(){return"https://ridesync-lmxo.onrender.com/api"},
 aIN(){var s=new A.Zz()
 s.a3i()
 return s},
